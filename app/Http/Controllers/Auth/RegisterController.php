@@ -28,7 +28,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/posts';
 
     /**
      * Create a new controller instance.
@@ -63,6 +63,8 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        session()->flash('message' ,'Thank you for signing up!');
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
