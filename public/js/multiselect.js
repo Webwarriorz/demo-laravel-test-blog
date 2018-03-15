@@ -65,7 +65,7 @@
 /************************************************************************/
 /******/ ({
 
-/***/ 2:
+/***/ 1:
 /***/ (function(module, exports) {
 
 var g;
@@ -93,7 +93,7 @@ module.exports = g;
 
 /***/ }),
 
-/***/ 20:
+/***/ 3:
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -293,13 +293,12 @@ module.exports = __webpack_require__(38);
 /***/ }),
 
 /***/ 38:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
 /**
  * Multiselect plugin
  */
-window.Vue = __webpack_require__(49);
+window.Vue = __webpack_require__(39);
 
 var Multiselect = VueMultiselect.Multiselect;
 
@@ -317,7 +316,6 @@ new Vue({
         }
     },
     methods: {
-
         fetchAllTags: function fetchAllTags() {
             var vm = this;
 
@@ -332,6 +330,25 @@ new Vue({
                 }
 
                 vm.$set(vm, 'options', arr);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        fetchConnectedTags: function fetchConnectedTags() {
+            var vm = this;
+            var postId = document.getElementById('post-id').value;
+
+            // Get the connected tags for the post
+            axios.get('/posts/' + postId + '/tags').then(function (response) {
+
+                var data = response.data;
+
+                var arr = [];
+                for (var i = 0, len = data.length; i < len; i++) {
+                    arr.push(data[i].name);
+                }
+
+                vm.$set(vm, 'value', arr);
             }).catch(function (error) {
                 console.log(error);
             });
@@ -351,13 +368,14 @@ new Vue({
         }
     },
     created: function created() {
+        this.fetchConnectedTags();
         this.fetchAllTags();
     }
 }).$mount('#multiselect');
 
 /***/ }),
 
-/***/ 49:
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11171,11 +11189,11 @@ Vue$3.compile = compileToFunctions;
 
 module.exports = Vue$3;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(50).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(40).setImmediate))
 
 /***/ }),
 
-/***/ 50:
+/***/ 40:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var apply = Function.prototype.apply;
@@ -11228,7 +11246,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(51);
+__webpack_require__(41);
 // On some exotic environments, it's not clear which object `setimmeidate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -11239,11 +11257,11 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
 
-/***/ 51:
+/***/ 41:
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -11433,7 +11451,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2), __webpack_require__(20)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(3)))
 
 /***/ })
 

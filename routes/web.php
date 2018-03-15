@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/posts/{id}/delete','PostsController@destroy');
     Route::get('/posts/create','PostsController@create');
     Route::post('/posts','PostsController@store');
+    Route::get('/posts/{id}/tags','PostsController@getConnectedTags');
 
     // Comments
     Route::get('/comments/{id}/delete','CommentsController@destroy');

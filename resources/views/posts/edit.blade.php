@@ -15,7 +15,7 @@
         </div>
         <div class="form-group">
             <label for="body">Body</label>
-            <textarea name="body" id="body" cols="30" rows="10" class="form-control" required="required">{{$post->body}}"</textarea>
+            <textarea name="body" id="body" cols="30" rows="10" class="form-control" required="required">{{$post->body}}</textarea>
         </div>
 
         <div id="multiselect">
@@ -32,6 +32,7 @@
         </div>
 
         <input name="tags" type="hidden" id="tags-selected">
+        <input name="post-id" type="hidden" id="post-id" value="{{$post->id}}">
 
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Update</button>

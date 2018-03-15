@@ -112,29 +112,32 @@ class PostsController extends Controller
 
         $postTag = new PostTag();
 
+        // Get the current post tags
+        $currentPostTags = $postTag->where('post_id', '=', $post->id)
+            ->get();
+
+        // Delete the existing tags if any exist
+        if (count($currentPostTags)) {
+            $postTag->where('post_id', '=', $post->id)
+                ->delete();
+        }
+
         // Update the post tags
         if (!empty(request()->tags)) {
 
             $tagsList = explode('|', request()->tags);
 
+            // Save each tags
             foreach ($tagsList as $tagName) {
 
                 $tag = Tag::where('name', '=', $tagName)->firstOrFail();
 
-                // Filter for duplication
-                $isExist = $postTag->where('post_id', '=', $post->id)
-                    ->where('tag_id', '=', $tag->id)
-                    ->get();
-
-                if (!count($isExist) && $post->id != 0 && $tag->id != 0) {
-
-                    DB::table('post_tag')->insert([
-                        'post_id' => $post->id,
-                        'tag_id' => $tag->id,
-                        'created_at' => Carbon::now(),
-                        'updated_at' => Carbon::now(),
-                    ]);
-                }
+                DB::table('post_tag')->insert([
+                    'post_id' => $post->id,
+                    'tag_id' => $tag->id,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
 
             }
         }
@@ -159,5 +162,24 @@ class PostsController extends Controller
         session()->flash('message', 'The post is successfully deleted.');
 
         return redirect("/posts");
+    }
+
+    /**
+     * Get the connected tags names for the post.
+     *
+     * @param $id
+     * @return mixed
+     */
+    public function getConnectedTags($id)
+    {
+        $tagIdCollection = PostTag::select('tag_id')
+            ->where('post_id', '=', $id)
+            ->get('tag_id');
+
+        $tags = Tag::select('name')
+            ->whereIn('id', $tagIdCollection)
+            ->get();
+
+        return $tags;
     }
 }

@@ -40,13 +40,35 @@ new Vue({
                     console.log(error);
                 });
         },
+        fetchConnectedTags: function () {
+            var vm = this;
+            var postId = document.getElementById('post-id').value;
+
+            // Get the connected tags for the post
+            axios.get('/posts/' + postId + '/tags')
+                .then(function (response) {
+
+                    var data = response.data;
+
+                    var arr = [];
+                    for (var i = 0, len = data.length; i < len; i++) {
+                        arr.push(data[i].name);
+                    }
+
+                    vm.$set(vm, 'value', arr);
+
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        },
     },
     watch: {
         // Set the form input when the tags modified.
         'value': function (val) {
             var str = '';
             for (var i = 0, len = val.length; i < len; i++) {
-                if(i>0) {
+                if (i > 0) {
                     str += '|';
                 }
                 str += val[i]
@@ -55,6 +77,7 @@ new Vue({
         }
     },
     created: function () {
+        this.fetchConnectedTags();
         this.fetchAllTags();
     },
 }).$mount('#multiselect')
