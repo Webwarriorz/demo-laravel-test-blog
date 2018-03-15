@@ -4,6 +4,7 @@
 window.Vue = require('vue');
 
 const Multiselect = VueMultiselect.Multiselect;
+import axios from 'axios';
 
 new Vue({
     components: {
@@ -16,7 +17,7 @@ new Vue({
         trackBy: {
             type: String,
             default: 'id'
-        },
+        }
     },
     methods: {
         fetchAllTags: function () {
@@ -42,7 +43,14 @@ new Vue({
         },
         fetchConnectedTags: function () {
             var vm = this;
-            var postId = document.getElementById('post-id').value;
+            var element = document.getElementById('post-id');
+
+            // Check the post-id is exist
+            if (element === null ) {
+                return false;
+            }
+
+            var postId = element.value;
 
             // Get the connected tags for the post
             axios.get('/posts/' + postId + '/tags')
@@ -61,23 +69,10 @@ new Vue({
                 .catch(function (error) {
                     console.log(error);
                 });
-        },
-    },
-    watch: {
-        // Set the form input when the tags modified.
-        'value': function (val) {
-            var str = '';
-            for (var i = 0, len = val.length; i < len; i++) {
-                if (i > 0) {
-                    str += '|';
-                }
-                str += val[i]
-            }
-            document.getElementById('tags-selected').value = str;
         }
     },
     created: function () {
         this.fetchConnectedTags();
         this.fetchAllTags();
-    },
-}).$mount('#multiselect')
+    }
+}).$mount('#multiselect');

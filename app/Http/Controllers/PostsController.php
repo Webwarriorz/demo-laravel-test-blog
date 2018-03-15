@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Post;
 use App\PostTag;
 use App\Tag;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -62,8 +61,11 @@ class PostsController extends Controller
 
         // Save the post with the current user id
         auth()->user()->publish(
-            new Post(request(['title', 'body']))
+            $post = new Post(request(['title', 'body']))
         );
+
+        // Create the post tags
+        $this->createPostTags($post);
 
         session()->flash('message', 'The post is successfully published.');
 
@@ -122,25 +124,8 @@ class PostsController extends Controller
                 ->delete();
         }
 
-        // Update the post tags
-        if (!empty(request()->tags)) {
-
-            $tagsList = explode('|', request()->tags);
-
-            // Save each tags
-            foreach ($tagsList as $tagName) {
-
-                $tag = Tag::where('name', '=', $tagName)->firstOrFail();
-
-                DB::table('post_tag')->insert([
-                    'post_id' => $post->id,
-                    'tag_id' => $tag->id,
-                    'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now(),
-                ]);
-
-            }
-        }
+        // Create the post tags
+        $this->createPostTags($post);
 
         session()->flash('message', 'The post is successfully updated.');
 
@@ -182,4 +167,31 @@ class PostsController extends Controller
 
         return $tags;
     }
+
+    /**
+     * Create the post tags
+     *
+     * @param Post $post
+     */
+    public function createPostTags(Post $post)
+    {
+        // Create the post tags
+        if (!empty(request()->tags)) {
+
+            $tagsList = explode(',', request()->tags);
+
+            // Save each tags
+            foreach ($tagsList as $tagName) {
+
+                $tag = Tag::where('name', '=', $tagName)->firstOrFail();
+
+                DB::table('post_tag')->insert([
+                    'post_id' => $post->id,
+                    'tag_id' => $tag->id
+                ]);
+
+            }
+        }
+    }
+
 }

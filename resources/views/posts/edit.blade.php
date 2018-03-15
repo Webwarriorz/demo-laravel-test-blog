@@ -28,10 +28,9 @@
                     name="tags[]"
             >
             </multiselect>
-
+            <input name="tags" type="hidden" v-model="value">
         </div>
 
-        <input name="tags" type="hidden" id="tags-selected">
         <input name="post-id" type="hidden" id="post-id" value="{{$post->id}}">
 
         <div class="form-group">
@@ -39,7 +38,6 @@
         </div>
     </form>
 
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue-multiselect@2.0.6"></script>
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.0.6/dist/vue-multiselect.min.css">
     <script src="{{ asset('js/multiselect.js') }}"></script>
